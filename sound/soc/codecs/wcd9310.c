@@ -43,6 +43,13 @@ static int cfilt_adjust_ms = 10;
 module_param(cfilt_adjust_ms, int, 0644);
 MODULE_PARM_DESC(cfilt_adjust_ms, "delay after adjusting cfilt voltage in ms");
 
+// intelli_plug: Force set 2cpus working when playing music while screen off
+// - jollaman999 -
+#ifdef CONFIG_INTELLI_PLUG
+bool wcd9310_is_playing;
+EXPORT_SYMBOL(wcd9310_is_playing);
+#endif
+
 #define WCD9310_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
@@ -4170,6 +4177,12 @@ static int tabla_startup(struct snd_pcm_substream *substream,
 		}
 #endif /*CONFIG_LGE_AUX_NOISE*/
 
+	// intelli_plug: Force set 2cpus working when playing music while screen off
+	// - jollaman999 -
+#ifdef CONFIG_INTELLI_PLUG
+	wcd9310_is_playing = true;
+#endif
+
 	return 0;
 }
 
@@ -4221,6 +4234,28 @@ static void tabla_shutdown(struct snd_pcm_substream *substream,
 		pm_runtime_mark_last_busy(tabla_core->dev->parent);
 		pm_runtime_put(tabla_core->dev->parent);
 	}
+
+#ifdef CONFIG_LGE_AUX_NOISE
+	/*
+	 * 2012-07-20, bob.cho@lge.com
+	 * when playback is end, start force enable of HPH PAs.
+	 */
+	if(is_force_enable_pin && snd_codec) {
+		snd_soc_update_bits(snd_codec, TABLA_A_RX_HPH_CNP_EN, 0xB0, 0xB0);
+		snd_soc_update_bits(snd_codec, TABLA_A_CP_EN, 0x01 , 0x01);
+		snd_soc_dapm_force_enable_pin(&snd_codec->dapm, "HPHL");
+		snd_soc_dapm_force_enable_pin(&snd_codec->dapm, "HPHR");
+		snd_soc_dapm_force_enable_pin(&snd_codec->dapm, "CP");
+	}
+#endif /*CONFIG_LGE_AUX_NOISE*/
+
+	// intelli_plug: Force set 2cpus working when playing music while screen off
+	// - jollaman999 -
+#ifdef CONFIG_INTELLI_PLUG
+	wcd9310_is_playing = false;
+#endif
+
+>>>>>>> 4a14807... intelli_plug,wcd9310: Force set 2cpus working when playing music while screen off
 }
 
 int tabla_mclk_enable(struct snd_soc_codec *codec, int mclk_enable, bool dapm)
