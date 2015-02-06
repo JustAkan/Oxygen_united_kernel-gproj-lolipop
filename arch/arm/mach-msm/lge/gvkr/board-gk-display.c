@@ -486,7 +486,7 @@ static int mipi_dsi_panel_power(int on)
               {
                      rc = gpio_request(DSV_ONBST, "DSV_ONBST");
                      if (rc) {
-                            pr_err(KERN_INFO "%s: DSV_ONBST Request Fail, rc=%d\n", __func__, rc);
+                            pr_err("%s: DSV_ONBST Request Fail, rc=%d\n", __func__, rc);
                      }
                      gpio_tlmm_config(GPIO_CFG(DSV_ONBST, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
                      mdelay(50);
@@ -554,9 +554,9 @@ static int mipi_dsi_panel_power(int on)
 		dsi_power_on = true;
 	}
 
+  pr_info("%s: onoff = %d\n", __func__, on);
 	if (on) /* LCD on start (power side) */
        {
-              printk(KERN_INFO "[LCD][DEBUG] %s: lcd power on status (status=%d)\n", __func__, on);
 
 		if (lge_get_board_revno() == HW_REV_A || lge_get_board_revno() == HW_REV_B)
               {
@@ -673,7 +673,6 @@ static int mipi_dsi_panel_power(int on)
 	}
        else /* LCD off start (power side) */
        {
-              printk(KERN_INFO "[LCD][DEBUG] %s: lcd power off (status=%d)\n", __func__, on);
 
 		if (lge_get_board_revno() == HW_REV_A || lge_get_board_revno() == HW_REV_B)
               {

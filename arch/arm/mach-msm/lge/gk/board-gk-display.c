@@ -325,9 +325,9 @@ static struct msm_bus_scale_pdata mdp_bus_scale_pdata = {
 static struct msm_panel_common_pdata mdp_pdata = {
 	.gpio = MDP_VSYNC_GPIO,
 	.mdp_max_clk = 266667000,
-	.mdp_max_bw = 4290000000u,
-	.mdp_bw_ab_factor = 115,
-	.mdp_bw_ib_factor = 200,
+	.mdp_max_bw = 3080000000UL,
+	.mdp_bw_ab_factor = 180,
+	.mdp_bw_ib_factor = 190,
 	.mdp_bus_scale_table = &mdp_bus_scale_pdata,
 	.mdp_rev = MDP_REV_44,
 #ifdef CONFIG_MSM_MULTIMEDIA_USE_ION
@@ -349,6 +349,9 @@ void __init apq8064_mdp_writeback(struct memtype_reserve* reserve_table)
 		mdp_pdata.ov0_wb_size;
 	reserve_table[mdp_pdata.mem_hid].size +=
 		mdp_pdata.ov1_wb_size;
+
+	pr_info("mem_map: mdp reserved with size 0x%lx in pool\n",
+			mdp_pdata.ov0_wb_size + mdp_pdata.ov1_wb_size);
 #endif
 }
 
@@ -454,11 +457,10 @@ static int mipi_dsi_panel_power(int on)
 	static int gpio22;	// DSV_LOAD_EN (PM8921_GPIO_22)
 	int rc;
 
-	pr_debug("%s: state : %d\n", __func__, on);
 
 	if (!dsi_power_on) /* LCD initial start (power side) */
-       {
-	       printk(KERN_INFO "[LCD][DEBUG] %s: mipi lcd power initial\n", __func__);
+  {
+  	pr_info("%s: initial start\n", __func__);
 
 		reg_lvs6 = regulator_get(&msm_mipi_dsi1_device.dev, "dsi_iovcc");
 		if (IS_ERR(reg_lvs6)) {
@@ -484,7 +486,7 @@ static int mipi_dsi_panel_power(int on)
               {
                      rc = gpio_request(DSV_ONBST, "DSV_ONBST");
                      if (rc) {
-                            pr_err(KERN_INFO "%s: DSV_ONBST Request Fail, rc=%d\n", __func__, rc);
+                            pr_err("%s: DSV_ONBST Request Fail, rc=%d\n", __func__, rc);
                      }
                      gpio_tlmm_config(GPIO_CFG(DSV_ONBST, 0, GPIO_CFG_OUTPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA), GPIO_CFG_ENABLE);
                      mdelay(50);
@@ -552,9 +554,10 @@ static int mipi_dsi_panel_power(int on)
 		dsi_power_on = true;
 	}
 
+  pr_info("%s: onoff = %d\n", __func__, on);
+
 	if (on) /* LCD on start (power side) */
        {
-              printk(KERN_INFO "[LCD][DEBUG] %s: lcd power on status (status=%d)\n", __func__, on);
 
 		if (lge_get_board_revno() == HW_REV_A || lge_get_board_revno() == HW_REV_B)
               {
@@ -671,7 +674,6 @@ static int mipi_dsi_panel_power(int on)
 	}
        else /* LCD off start (power side) */
        {
-              printk(KERN_INFO "[LCD][DEBUG] %s: lcd power off (status=%d)\n", __func__, on);
 
 		if (lge_get_board_revno() == HW_REV_A || lge_get_board_revno() == HW_REV_B)
               {
