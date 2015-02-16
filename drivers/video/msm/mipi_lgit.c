@@ -35,13 +35,6 @@ static int __init mipi_lgit_lcd_init(void);
 
 //LGE_UPDATE_S hojin.ryu@lge.com 20120629 IEF On/Off function for camera preview
 #define LGIT_IEF_SWITCH
-// To prevent doubletap2wake 3 taps issue when suspended. - by jollaman999
-// intelli_plug: Force set 2cpus working when playing music while screen off
-// - jollaman999 -
-#if defined(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE) || defined(CONFIG_INTELLI_PLUG)
-extern bool scr_suspended;
-#endif
- music while screen off
 
 #ifdef LGIT_IEF_SWITCH
 struct msm_fb_data_type *local_mfd0 = NULL;
@@ -149,19 +142,6 @@ int mipi_lgit_lcd_ief_on(void)
 	printk(KERN_INFO "%s: mipi lgit lcd on ended \n", __func__);
 
 	return cnt;
-	pr_info("%s finished\n", __func__);
-	// To prevent doubletap2wake 3 taps issue when suspended. - by jollaman999
-	// intelli_plug: Force set 2cpus working when playing music while screen off
-	// - jollaman999 -
-#if defined(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE) || defined(CONFIG_INTELLI_PLUG)
-	scr_suspended = false;
-#endif
-	// Use sampling_rate_screen_off when screen off - by jollaman999 & gu5t3r
-#ifdef CONFIG_CPU_FREQ_GOV_SMARTMAX
-	smartmax_screen_off = false;
-#endif
-	return 0;
- music while screen off
 }
 
 int mipi_lgit_lcd_off(struct platform_device *pdev)
@@ -214,19 +194,6 @@ int mipi_lgit_lcd_off(struct platform_device *pdev)
 	printk(KERN_INFO"%s: mipi lgit lcd off ended \n", __func__);
 
 	return cnt;
-	pr_info("%s finished\n", __func__);
-	// To prevent doubletap2wake 3 taps issue when suspended. - by jollaman999
-	// intelli_plug: Force set 2cpus working when playing music while screen off
-	// - jollaman999 -
-#if defined(CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE) || defined(CONFIG_INTELLI_PLUG)
-	scr_suspended = true;
-#endif
-	// Use sampling_rate_screen_off when screen off - by jollaman999 & gu5t3r
-#ifdef CONFIG_CPU_FREQ_GOV_SMARTMAX
-	smartmax_screen_off = true;
-#endif
-	return 0;
- music while screen off
 }
 
 int mipi_lgit_lcd_off_for_shutdown(void)
