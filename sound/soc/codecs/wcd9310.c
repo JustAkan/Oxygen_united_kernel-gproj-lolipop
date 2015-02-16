@@ -43,14 +43,6 @@ static int cfilt_adjust_ms = 10;
 module_param(cfilt_adjust_ms, int, 0644);
 MODULE_PARM_DESC(cfilt_adjust_ms, "delay after adjusting cfilt voltage in ms");
 
-// intelli_plug: Force intelli_plug working when playing music while screen off
-// - jollaman999 -
-#ifdef CONFIG_INTELLI_PLUG
-bool wcd9310_is_playing;
-EXPORT_SYMBOL(wcd9310_is_playing);
-#endif
-
-
 #define WCD9310_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |\
 			SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000 |\
 			SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000)
@@ -4152,6 +4144,7 @@ static void tabla_codec_calibrate_hs_polling(struct snd_soc_codec *codec)
 EXPORT_SYMBOL_GPL(tabla_codec_hph_pa_ctl);
 #endif /*CONFIG_LGE_AUX_NOISE*/
 
+
 static int tabla_startup(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
 {
@@ -4177,12 +4170,6 @@ static int tabla_startup(struct snd_pcm_substream *substream,
 		}
 #endif /*CONFIG_LGE_AUX_NOISE*/
 
-	// intelli_plug: Force intelli_plug working when playing music while screen off
-	// - jollaman999 -
-#ifdef CONFIG_INTELLI_PLUG
-	wcd9310_is_playing = true;
-#endif
-
 	return 0;
 }
 
@@ -4206,12 +4193,6 @@ static void tabla_shutdown(struct snd_pcm_substream *substream,
 	
 }
 #endif /*CONFIG_LGE_AUX_NOISE*/
-
-	// intelli_plug: Force intelli_plug working when playing music while screen off
-	// - jollaman999 -
-#ifdef CONFIG_INTELLI_PLUG
-	wcd9310_is_playing = false;
-#endif
 
 static void tabla_shutdown(struct snd_pcm_substream *substream,
 		struct snd_soc_dai *dai)
