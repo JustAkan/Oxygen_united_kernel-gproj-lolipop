@@ -2341,9 +2341,9 @@ static struct platform_device msm_tsens_device = {
 	.id = -1,
 };
 
-#ifdef CONFIG_DYNAMIC_THERMAL_CONTROL  
-static struct msm_thermal_data msm_thermal_pdata = {  
-	.sensor_id = 7, 
+#ifdef CONFIG_DYNAMIC_THERMAL_CONTROL
+static struct msm_thermal_data msm_thermal_pdata = {
+	.sensor_id = 7,
 	.poll_ms = 1200,
 	.shutdown_temp = 90,
 
