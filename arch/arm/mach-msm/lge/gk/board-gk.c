@@ -2375,7 +2375,7 @@ static struct msm_thermal_data msm_thermal_pdata = {
 	.temp_hysteresis_degC = 10,
 	.freq_step = 2,
 };
-
+#endif /* CONFIG_DYNAMIC_THERMAL_CONTROL */
 #define MSM_SHARED_RAM_PHYS 0x80000000
 static void __init apq8064_map_io(void)
 {

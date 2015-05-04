@@ -55,7 +55,6 @@ struct msm_thermal_stat {
 #if defined(CONFIG_MACH_APQ8064_GK_KR)||defined(CONFIG_MACH_APQ8064_GKATT)||defined(CONFIG_MACH_APQ8064_GVDCM)||defined(CONFIG_MACH_APQ8064_GV_KR)||defined(CONFIG_MACH_APQ8064_GKGLOBAL)
 	uint32_t limit_temp_degC_low;
 #endif
-#endif /* CONFIG_DYNAMIC_THERMAL_CONTROL */
 };
 
 #if defined(CONFIG_THERMAL_MONITOR) || defined(CONFIG_DYNAMIC_THERMAL_CONTROL)
