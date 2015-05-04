@@ -436,6 +436,7 @@ struct entropy_store {
 	unsigned input_rotate;
 	int entropy_count;
 	int entropy_total;
+	int input_rotate;
 	unsigned int initialized:1;
 	__u8 last_data[EXTRACT_SIZE];
 };
@@ -483,13 +484,8 @@ static __u32 const twist_table[8] = {
  * it's cheap to do so and helps slightly in the expected case where
  * the entropy is concentrated in the low-order bits.
  */
-<<<<<<< HEAD
 static void _mix_pool_bytes(struct entropy_store *r, const void *in,
 			    int nbytes, __u8 out[64])
-=======
-static void __mix_pool_bytes(struct entropy_store *r, const void *in,
-			     int nbytes, __u8 out[64])
->>>>>>> bddc852... random: use lockless techniques in the interrupt path
 {
 	unsigned long i, j, tap1, tap2, tap3, tap4, tap5;
 	int input_rotate;
@@ -539,7 +535,6 @@ static void __mix_pool_bytes(struct entropy_store *r, const void *in,
 	if (out)
 		for (j = 0; j < 16; j++)
 			((__u32 *)out)[j] = r->pool[(i - j) & wordmask];
-<<<<<<< HEAD
 }
 
 static void __mix_pool_bytes(struct entropy_store *r, const void *in,
@@ -588,18 +583,6 @@ static void fast_mix(struct fast_pool *f, const void *in, int nbytes)
 	}
 	f->count = i;
 	f->rotate = input_rotate;
-=======
-}
-
-static void mix_pool_bytes(struct entropy_store *r, const void *in,
-			     int nbytes, __u8 out[64])
-{
-	unsigned long flags;
-
-	spin_lock_irqsave(&r->lock, flags);
-	__mix_pool_bytes(r, in, nbytes, out);
-	spin_unlock_irqrestore(&r->lock, flags);
->>>>>>> bddc852... random: use lockless techniques in the interrupt path
 }
 
 struct fast_pool {
@@ -654,7 +637,6 @@ retry:
 		entropy_count = r->poolinfo->POOLBITS;
 	if (cmpxchg(&r->entropy_count, orig, entropy_count) != orig)
 		goto retry;
-<<<<<<< HEAD
 
 	if (!r->initialized && nbits > 0) {
 		r->entropy_total += nbits;
@@ -664,8 +646,6 @@ retry:
 
 	trace_credit_entropy_bits(r->name, nbits, entropy_count,
 				  r->entropy_total, _RET_IP_);
-=======
->>>>>>> bddc852... random: use lockless techniques in the interrupt path
 
 	if (!r->initialized && nbits > 0) {
 		r->entropy_total += nbits;
@@ -826,7 +806,7 @@ void add_interrupt_randomness(int irq, int irq_flags)
 	fast_pool->last = now;
 
 	r = nonblocking_pool.initialized ? &input_pool : &nonblocking_pool;
-	__mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool), NULL);
+	mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
 	/*
 	 * If we don't have a valid cycle counter, and we see
 	 * back-to-back timer interrupts, then skip giving credit for
@@ -967,11 +947,7 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	unsigned long flags;
 
 	/* Generate a hash across the pool, 16 words (512 bits) at a time */
-<<<<<<< HEAD
 	sha_init(hash.w);
-=======
-	sha_init(hash);
->>>>>>> bddc852... random: use lockless techniques in the interrupt path
 	spin_lock_irqsave(&r->lock, flags);
 	for (i = 0; i < r->poolinfo->poolwords; i += 16)
 		sha_transform(hash.w, (__u8 *)(r->pool + i), workspace);
@@ -985,11 +961,7 @@ static void extract_buf(struct entropy_store *r, __u8 *out)
 	 * brute-forcing the feedback as hard as brute-forcing the
 	 * hash.
 	 */
-<<<<<<< HEAD
 	__mix_pool_bytes(r, hash.w, sizeof(hash.w), extract);
-=======
-	__mix_pool_bytes(r, hash, sizeof(hash), extract);
->>>>>>> bddc852... random: use lockless techniques in the interrupt path
 	spin_unlock_irqrestore(&r->lock, flags);
 
 	/*
@@ -1162,15 +1134,12 @@ static void init_std_data(struct entropy_store *r)
 	mix_pool_bytes(r, &now, sizeof(now), NULL);
 	for (i = r->poolinfo->POOLBYTES; i > 0; i -= sizeof(rv)) {
 		if (!arch_get_random_long(&rv))
-<<<<<<< HEAD
 	spin_unlock_irqrestore(&r->lock, flags);
 
 	now = ktime_get_real();
 	mix_pool_bytes(r, &now, sizeof(now));
 	for (i = r->poolinfo->POOLBYTES; i > 0; i -= sizeof flags) {
 		if (!arch_get_random_long(&flags))
-=======
->>>>>>> bddc852... random: use lockless techniques in the interrupt path
 			break;
 		mix_pool_bytes(r, &rv, sizeof(rv), NULL);
 	}
