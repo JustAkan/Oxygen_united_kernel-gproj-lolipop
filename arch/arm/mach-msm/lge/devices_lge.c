@@ -448,24 +448,7 @@ static struct persistent_ram lge_persistent_ram = {
 	.descs = pram_descs,
 };
 
-<<<<<<< HEAD
 void __init lge_add_persistent_ram(void)
-=======
-#ifdef CONFIG_KEXEC_HARDBOOT
-void __init kexec_hardboot_reserve(void)
-{
-	struct membank* bank = &meminfo.bank[0];
-	phys_addr_t start = bank->start + bank->size - SZ_1M - LGE_RAM_CONSOLE_SIZE;
-	int ret = memblock_remove(start, SZ_1M);
-	if(!ret)
-		pr_info("Hardboot page reserved at 0x%X\n", start);
-	else
-		pr_err("Failed to reserve space for hardboot page at 0x%X!\n", start);
-}
-#endif
-
-void __init lge_add_ramconsole_devices(void)
->>>>>>> 4c9c1a0... kexec: Re-work hardboot support for j1 boards
 {
 	struct persistent_ram *pram = &lge_persistent_ram;
 	struct membank* bank = &meminfo.bank[0];
@@ -489,15 +472,7 @@ void __init lge_reserve(void)
 		pr_err("Failed to reserve space for hardboot page at 0x%X!\n", start);
 #endif
 
-<<<<<<< HEAD
 	lge_add_persistent_ram();
-=======
-#ifdef CONFIG_KEXEC_HARDBOOT
-	// Reserve space for hardboot page, just before the ram_console
-	kexec_hardboot_reserve();
-#endif
-	platform_device_register(&ram_console_device);
->>>>>>> 4c9c1a0... kexec: Re-work hardboot support for j1 boards
 }
 
 #ifdef CONFIG_ANDROID_RAM_CONSOLE
