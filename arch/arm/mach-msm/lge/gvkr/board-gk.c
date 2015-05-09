@@ -2338,15 +2338,17 @@ static struct msm_thermal_data msm_thermal_pdata = {
 
 	.allowed_max_high = 68,
 	.allowed_max_low = 56,
-	.allowed_max_freq = 918000,
+	.allowed_max_freq = 1026000,
 
 	.allowed_mid_high = 58,
 	.allowed_mid_low = 54,
-	.allowed_mid_freq = 1026000,
+	.allowed_mid_freq = 1350000,
 
 	.allowed_low_high = 56,
 	.allowed_low_low = 50,
-	.allowed_low_freq = 1134000,
+	.allowed_low_freq = 1566000,
+
+	.dynamic_thermal_control = 1,
  };
 #else /* CONFIG_DYNAMIC_THERMAL_CONTROL */
 static struct msm_thermal_data msm_thermal_pdata = {
