@@ -404,6 +404,8 @@ KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -Wno-sizeof-pointer-memaccess \
+		   -Wno-discarded-array-qualifiers \
+		   -Wno-logical-not-parentheses \
 		   -mno-unaligned-access \
 		   -fno-delete-null-pointer-checks \
 		   -std=gnu89 \
