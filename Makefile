@@ -1,7 +1,7 @@
 VERSION = 3
 PATCHLEVEL = 4
 SUBLEVEL = 107
-EXTRAVERSION = -United_OxyGen_kernel-v2.2-L
+EXTRAVERSION = -United_OxyGen_kernel-v2.3-L
 NAME = Saber-toothed Squirrel
 
 # *DOCUMENTATION*
